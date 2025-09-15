@@ -1,0 +1,60 @@
+/*
+ * Description: This is a CSS reset for use in personal projects.
+ * Author: Pedro Augusto (https://github.com/PedroASB)
+ *
+ * Based on: 
+    * Matt Brictson's recommendations (https://mattbrictson.com/blog/css-normalize-and-reset)
+    * Josh Comeau's custom CSS reset (https://www.joshwcomeau.com/css/custom-css-reset/)
+ */
+
+
+/* Use box-sizing model */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Remove default margin */
+* {
+    margin: 0;
+}
+
+body {
+    /* Add accessible line-height */
+    line-height: 1.5;
+    /* Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Improve media defaults */
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+
+/* Inherit fonts for form controls */
+input, button, textarea, select {
+    font: inherit;
+}
+
+/* Remove the list styles when role="list" is present 
+   (keep list semantics but hide the bullets in those cases) */
+ol[role="list"], ul[role="list"] {
+    list-style: none;
+    padding-inline: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    /* Reset heading font styles */
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: 1.15;
+    /* Improve line wrapping */
+    overflow-wrap: break-word;
+    text-wrap: balance;
+}
+
+p {
+    /* Improve line wrapping */
+    overflow-wrap: break-word;
+    text-wrap: pretty;
+}
