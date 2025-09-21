@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'Chewy';
+    src: url('./assets/fonts/Chewy-Regular.woff2') format('woff2'),
+         url('./assets/fonts/Chewy-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --system-ui: system-ui, 
                  "Segoe UI", 
@@ -52,10 +61,7 @@ body {
 }
 
 #branding {
-    font-size: 3rem;
-    font-weight: 900;
     margin-top: 32px;
-    text-transform: uppercase;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -82,6 +88,12 @@ body {
         .nought {
             border: 8px solid var(--secondary-color);
         }
+    }
+
+    .title {
+        font-family: "Chewy", var(--system-ui);
+        font-size: 4.0rem;
+        text-transform: uppercase;
     }
 
 }
