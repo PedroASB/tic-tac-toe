@@ -1,11 +1,15 @@
 function createPlayer(playerName, playerMark) {
     const name = playerName;
     const mark = playerMark;
+    let score = 0;
 
     const getName = () => name;
     const getMark = () => mark;
+    const getScore = () => score;
+    const increaseScore = () => { score++; };
+    const resetScore = () => { score = 0; };
 
-    return {getName, getMark};
+    return {getName, getMark, getScore, increaseScore, resetScore};
 }
 
 function createSquare() {
@@ -19,26 +23,24 @@ function createSquare() {
 
 function createGameboard() {
     const board = [[], [], []];
+    let squaresMarked = 0;
 
     for (let i = 0; i < 3; i++) 
         for (let j = 0; j < 3; j++) 
             board[i].push(createSquare());
   
-    const checkSquare = (i, j) => board[i][j] === null;
+    const markSquare = (i, j, mark) => {
+        board[i][j].setMark(mark);
+        squaresMarked++;
+    };
 
-    const markSquare = (i, j, mark) => { board[i][j].setMark(mark); };
+    const isFreeSquare = (i, j) => board[i][j].getMark() === null;
 
-    // Printing at the standart output (terminal)
-    const printBoard = () => { 
-        for (let i = 0; i < 3; i++) {
-            process.stdout.write(" ");
-            for (let j = 0; j < 3; j++) {
-                const mark = board[i][j].getMark();
-                process.stdout.write((mark === null ? " " : mark));
-                process.stdout.write(j < 2 ? " | " : " ");
-            }
-            process.stdout.write(i < 2 ? "\n-----------\n" : "\n\n");
-        }
+    const clearBoard = () => {
+        for (let i = 0; i < 3; i++) 
+            for (let j = 0; j < 3; j++) 
+                board[i][j].setMark(null);
+        squaresMarked = 0;
     };
 
     const checkThreeInARow = (mark) => {
@@ -57,92 +59,157 @@ function createGameboard() {
         if (board[0][2].getMark() === mark && board[1][1].getMark() === mark && board[2][0].getMark() === mark) return true;
 
         return false;
-    }
+    };
 
-    return {checkSquare, markSquare, printBoard, checkThreeInARow};
+    const isFullyMarked = () => squaresMarked >= 9;
+
+    const getBoard = () => board;
+
+    return {markSquare, isFreeSquare, clearBoard, checkThreeInARow, isFullyMarked, getBoard};
 }
 
 function createGameController() {
     const gameboard = createGameboard();
+    let playerOne, playerTwo, currentPlayer, totalTies;
 
-    // Two sample players
-    const playerOne = createPlayer("Albert", "X");
-    const playerTwo = createPlayer("Bethany", "O");
+    const getPlayerOne = () => playerOne;
 
-    let currentPlayer = playerOne;
+    const getPlayerTwo = () => playerTwo;
 
-    const getPlayerInput = () => {
-        let i, j;
-        console.log(`\n${currentPlayer.getName()}'s turn:`);
+    const getCurrentPlayer = () => currentPlayer;
 
-        // Simulating an input
-        [i, j] = gameFlow[flowCounter];
-        flowCounter++;
-
-        return [i, j];
-    };
+    const getTotalTies = () => totalTies;
 
     const swapCurrentPlayer = () => { 
         currentPlayer = (currentPlayer === playerOne ? playerTwo : playerOne);
     };
 
-    const checkWinning = () => {
-        return gameboard.checkThreeInARow(currentPlayer.getMark());
-    };
-    
-    const playRound = () => {
-        const [i, j] = getPlayerInput();
+    const checkWinning = () => gameboard.checkThreeInARow(currentPlayer.getMark());
 
-        /**
-         * @TODO check if position was already marked
-         */
-        
+    const checkTie = () => gameboard.isFullyMarked();
+
+    const getBoard = () => gameboard.getBoard();
+    
+    const startNewRound = () => {
+        currentPlayer = playerOne;
+        gameboard.clearBoard();
+    }
+
+    const playTurn = (squarePosition) => {
+        const [i, j] = squarePosition;
+
+        // Check if position was already marked
+        if (!gameboard.isFreeSquare(i, j)) {
+            return;
+        }
+       
         gameboard.markSquare(i, j, currentPlayer.getMark());
-        gameboard.printBoard();
 
         if (checkWinning()) {
-            return true;
+            currentPlayer.increaseScore();
+            startNewRound();
         }
-
-        swapCurrentPlayer();
-        return false;
+        else if (checkTie()) {
+            totalTies++;
+            startNewRound();
+        }
+        else {
+            swapCurrentPlayer();
+        }
     };
 
-    const playGame = () => {
-        console.log("TIC TAC TOE\n");
-        gameboard.printBoard();
-        let hasWinner, maxRounds = 9;
+    const startGame = (playerOneName, playerOneMark, playerTwoName, playerTwoMark) => {
+        playerOne = createPlayer(playerOneName, playerOneMark);
+        playerTwo = createPlayer(playerTwoName, playerTwoMark);
+        totalTies = 0;
+        startNewRound();
+    };
 
-        while (maxRounds--) {
-            hasWinner = playRound();
-            
-            if (hasWinner) {
-                console.log(`\n${currentPlayer.getName()} has won the game!`);
-                return;
+    // @TODO Organize order:
+    return {getCurrentPlayer, playTurn, startGame, getPlayerOne, getPlayerTwo, getTotalTies, getBoard};
+}
+
+function createScreenController() {
+    const squares = Array.from(document.querySelectorAll(".square"));
+    const playerOneScoreOutput = document.querySelector("#player-one output");
+    const playerTwoScoreOutput = document.querySelector("#player-two output");
+    const tiesOutput = document.querySelector("#ties output");
+    const statusSpan = document.querySelector("#status span");
+    const gameController = createGameController();
+    const squarePositionMap = {
+        "square-1": [0, 0],
+        "square-2": [0, 1],
+        "square-3": [0, 2],
+        "square-4": [1, 0],
+        "square-5": [1, 1],
+        "square-6": [1, 2],
+        "square-7": [2, 0],
+        "square-8": [2, 1],
+        "square-9": [2, 2]
+    };
+
+    const updateStatus = () => {
+        statusSpan.innerText = gameController.getCurrentPlayer().getName();
+    };
+
+    const updateScoreboard = () => {
+        playerOneScoreOutput.innerText = gameController.getPlayerOne().getScore();
+        playerTwoScoreOutput.innerText = gameController.getPlayerTwo().getScore();
+        tiesOutput.innerText = gameController.getTotalTies();
+    };
+
+    const updateGameboard = () => {
+        const board = gameController.getBoard();
+        let squareDivIndex = 0;
+    
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                const mark = board[i][j].getMark();
+                const squareDiv = squares[squareDivIndex];
+                squareDiv.innerHTML = "";
+                if (mark) {
+                    const markDiv = document.createElement("div");
+                    markDiv.classList.add(mark);
+                    squareDiv.appendChild(markDiv);
+                }
+                squareDiv.setAttribute("mark", mark ? mark : "none");
+                squareDivIndex++;
             }
         }
+    };
+    
+    const handleSquareClick = (event) => {
+        // When clicking on a child node (i.e. it's already marked)
+        if (!event.target.id) {
+            return;
+        }
 
-        console.log("It's a tie!");
+        const squarePosition = squarePositionMap[event.target.id];
+
+        gameController.playTurn(squarePosition);
+        updateGameboard();
+        updateScoreboard();
+        updateStatus();
     };
 
-    return {playGame};
+    const startNewGame = () => {
+        gameController.startGame("Albert", "cross", "Bethany", "nought");
+        updateGameboard();
+        updateScoreboard();
+        updateStatus();
+    };
+
+    const initialize = () => {
+        const newGameButton = document.querySelector("button#new-game");
+        newGameButton.addEventListener("click", startNewGame);
+        squares.forEach((square) => { square.addEventListener("click", handleSquareClick); });
+        startNewGame();
+    };
+
+    return {initialize};
 }
 
 
-// TEMPORARY
-const gameFlow = [
-    [0, 2],
-    [0, 0],
-    [2, 0],
-    [1, 1],
-    [2, 2],
-    [1, 2],
-    [2, 1],
-    [0, 1], // extra
-    [1, 0]  // extra
-];
-let flowCounter = 0;
-
 // Start program
-const gameController = createGameController();
-gameController.playGame();
+const screenController = createScreenController();
+screenController.initialize();

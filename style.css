@@ -1,0 +1,235 @@
+:root {
+    --system-ui: system-ui, 
+                 "Segoe UI", 
+                 Roboto, 
+                 Helvetica, 
+                 Arial, 
+                 sans-serif, 
+                 "Apple Color Emoji", 
+                 "Segoe UI Emoji", 
+                 "Segoe UI Symbol",
+                 "Noto Color Emoji";
+    --primary-color: #ef767a;
+    --secondary-color: #49beaa;
+    --neutral-color: #e5e8ec;
+    --main-bg-color: #37485a;
+    --maing-bg-color-hover: #47586b;
+    --board-line-color: #25313d;
+    --font-color-light: #e6e8ec;
+    --font-color-dark: #37485a;
+}
+
+body {
+    font-family: var(--system-ui);
+    min-height: 100vh;
+    background-color: var(--main-bg-color);
+    color: var(--font-color-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .cross {
+        position: relative;
+        transform: rotate(45deg);
+    
+        &::before, &::after {
+            content: "";
+            border-radius: 16px;
+            height: 100%;
+            position: absolute;
+            left: 40%;
+        }
+        
+        &::before {
+            transform: rotate(90deg);
+        }
+    }
+    
+    .nought {
+        border-radius: 50%;
+    }
+}
+
+
+
+#branding {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-top: 32px;
+    margin-bottom: 48px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+}
+
+#main-content {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+}
+
+#scoreboard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+
+    .cross::before, .cross::after {
+        background-color: var(--primary-color);
+        width: 8px;
+    }
+    
+    .nought {
+        border: 8px solid var(--secondary-color);
+    }
+
+    .cross, .nought {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+.score-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    gap: 4px;
+    padding: 8px;
+    color: var(--font-color-dark);
+    line-height: 1;
+
+    &#player-one {
+        background-color: var(--primary-color);
+    }
+
+    &#player-two {
+        background-color: var(--secondary-color);
+    }
+
+    &#ties {
+        background-color: var(--neutral-color);
+        width: 120px;
+        margin: 0 16px;
+    }
+
+    .label {
+        font-weight: 500;
+        font-size: 0.90rem;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        #player-one &, #player-two & {
+            width: 8rem;
+        }
+    }
+
+    output {
+        font-size: 2rem;
+        font-weight: 900;
+    }
+}
+
+#status {
+    text-transform: none;
+    font-size: 1.2rem;
+}
+
+#gameboard {
+    width: 400px;
+    height: 400px;
+    display: grid;
+    grid-template-rows: 8fr 1fr 8fr 1fr 8fr;
+    grid-template-columns: 8fr 1fr 8fr 1fr 8fr;
+    margin-bottom: 16px;
+
+    .cross {
+        width: 90px;
+        height: 90px;
+    }
+
+    .cross::before, .cross::after {
+        background-color: var(--primary-color);
+        width: 16px;
+    }
+    
+    .nought {
+        border: 16px solid var(--secondary-color);
+        width: 80px;
+        height: 80px;
+    }
+
+    .square {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .square[mark="none"]:hover {
+        background-color: var(--maing-bg-color-hover);
+        margin: 8px;
+        border-radius: 16px;
+    }
+
+    .board-line {
+        background-color: var(--board-line-color);
+        border-radius: 8px;
+    }
+
+    #line-1 {
+        grid-column-start: 2;
+        grid-row: 1 / -1;
+    }
+
+    #line-2 {
+        grid-column-start: 4;
+        grid-row: 1 / -1;
+    }
+
+    #line-3 {
+        grid-row-start: 2;
+        grid-column: 1 / -1;
+    }
+
+    #line-4 {
+        grid-row-start: 4;
+        grid-column: 1 / -1;
+    }
+}
+
+button#new-game {
+    text-transform: uppercase;
+    width: 16ch;
+    padding: 8px 4px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--font-color-dark);
+    background-color: var(--neutral-color);
+    border: none;
+    border-radius: 8px;
+
+    &:hover {
+        background-color: #fff;
+    }
+}
+
+.footer {
+    padding: 4px 0;
+
+    a {
+        text-decoration: none;
+        color: var(--font-color-light);
+    }
+}
+
+
+/* TEMPORARY */
+* {
+    /* border: 1px solid red; */
+}
