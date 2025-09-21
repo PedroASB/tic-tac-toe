@@ -125,16 +125,17 @@ function createGameController() {
         startNewRound();
     };
 
-    // @TODO Organize order:
-    return {getCurrentPlayer, playTurn, startGame, getPlayerOne, getPlayerTwo, getTotalTies, getBoard};
+    return {playTurn, startGame, getPlayerOne, getPlayerTwo, getCurrentPlayer, getTotalTies, getBoard};
 }
 
 function createScreenController() {
     const squares = Array.from(document.querySelectorAll(".square"));
-    const playerOneScoreOutput = document.querySelector("#player-one output");
-    const playerTwoScoreOutput = document.querySelector("#player-two output");
+    const playerOne = document.querySelector("#player-one");
+    const playerTwo = document.querySelector("#player-two");
     const tiesOutput = document.querySelector("#ties output");
     const statusSpan = document.querySelector("#status span");
+    const gameInitializationContent = document.querySelector("#game-initialization");
+    const gameplayContent = document.querySelector("#gameplay");
     const gameController = createGameController();
     const squarePositionMap = {
         "square-1": [0, 0],
@@ -153,8 +154,8 @@ function createScreenController() {
     };
 
     const updateScoreboard = () => {
-        playerOneScoreOutput.innerText = gameController.getPlayerOne().getScore();
-        playerTwoScoreOutput.innerText = gameController.getPlayerTwo().getScore();
+        playerOne.querySelector("output").innerText = gameController.getPlayerOne().getScore();
+        playerTwo.querySelector("output").innerText = gameController.getPlayerTwo().getScore();
         tiesOutput.innerText = gameController.getTotalTies();
     };
 
@@ -192,18 +193,47 @@ function createScreenController() {
         updateStatus();
     };
 
-    const startNewGame = () => {
-        gameController.startGame("Albert", "cross", "Bethany", "nought");
+    const handleFormData = () => {
+        const form = gameInitializationContent.querySelector("form");
+        const formData = new FormData(form);
+        let playerOneName, playerTwoName;
+        
+        for (const [key, value] of formData) {
+            if (key === "player-one-name") playerOneName = value || "Player 1";
+            if (key === "player-two-name") playerTwoName = value || "Player 2";
+        }
+
+        form.reset();
+        return {playerOneName, playerTwoName};
+    }
+
+    const startGame = () => {
+        let {playerOneName, playerTwoName} = handleFormData();
+
+        gameInitializationContent.style.display = "none";
+        gameplayContent.style.display = "flex";
+
+        gameController.startGame(playerOneName, "cross", playerTwoName, "nought");
+        playerOne.querySelector(".label").innerText = playerOneName;
+        playerTwo.querySelector(".label").innerText = playerTwoName;
         updateGameboard();
         updateScoreboard();
         updateStatus();
     };
 
+    const newGame = () => {
+        gameInitializationContent.style.display = "flex";
+        gameplayContent.style.display = "none";
+    }
+
     const initialize = () => {
+        const startGameButton = document.querySelector("button#start-game");
         const newGameButton = document.querySelector("button#new-game");
-        newGameButton.addEventListener("click", startNewGame);
+
+        startGameButton.addEventListener("click", startGame);
+        newGameButton.addEventListener("click", newGame);
         squares.forEach((square) => { square.addEventListener("click", handleSquareClick); });
-        startNewGame();
+        newGame();
     };
 
     return {initialize};

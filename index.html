@@ -10,54 +10,82 @@
 </head>
 <body>
     <div id="branding">
+        <div class="logo">
+            <div class="cross"></div>
+            <div class="nought"></div>
+        </div>
         <h1 class="title">Tic Tac Toe</h1>
     </div>
 
     <div id="main-content">
-       
-        <div id="gameboard">
-            <div id="square-1" class="square" mark="none"></div>
-            <div id="square-2" class="square" mark="none"></div>
-            <div id="square-3" class="square" mark="none"></div>
-            <div id="square-4" class="square" mark="none"></div>
-            <div id="square-5" class="square" mark="none"></div>
-            <div id="square-6" class="square" mark="none"></div>
-            <div id="square-7" class="square" mark="none"></div>
-            <div id="square-8" class="square" mark="none"></div>
-            <div id="square-9" class="square" mark="none"></div>
 
-            <div id="line-1" class="board-line"></div>
-            <div id="line-2" class="board-line"></div>
-            <div id="line-3" class="board-line"></div>
-            <div id="line-4" class="board-line"></div>
+        <div id="game-initialization">
+            <form method="dialog">
+                <div class="box player-one">
+                    <div class="cross"></div>
+                    <label for="player-one-name">
+                        <div class="label-text">Player 1's name:</div>
+                        <input type="text" id="player-one-name" name="player-one-name" maxlength="15" placeholder="Player 1">
+                    </label>
+                </div>
+
+                <div class="box player-two">
+                    <div class="nought"></div>
+                    <label for="player-two-name">
+                        <div class="label-text">Player 2's name:</div>
+                        <input type="text" id="player-two-name" name="player-two-name" maxlength="15" placeholder="Player 2">
+                    </label>
+                </div>
+
+                <button type="submit" id="start-game">Start Game</button>    
+            </form>
         </div>
 
-        <div id="status">
-            <span></span>'s turn
-        </div>
-
-         <div id="scoreboard">
-            <div class="cross"></div>
-
-            <div id="player-one" class="score-box">
-                <div class="label">Albert</div>
-                <output></output>
+        <div id="gameplay">
+            <div id="gameboard">
+                <div id="square-1" class="square" mark="none"></div>
+                <div id="square-2" class="square" mark="none"></div>
+                <div id="square-3" class="square" mark="none"></div>
+                <div id="square-4" class="square" mark="none"></div>
+                <div id="square-5" class="square" mark="none"></div>
+                <div id="square-6" class="square" mark="none"></div>
+                <div id="square-7" class="square" mark="none"></div>
+                <div id="square-8" class="square" mark="none"></div>
+                <div id="square-9" class="square" mark="none"></div>
+    
+                <div id="line-1" class="board-line"></div>
+                <div id="line-2" class="board-line"></div>
+                <div id="line-3" class="board-line"></div>
+                <div id="line-4" class="board-line"></div>
             </div>
-
-            <div id="ties" class="score-box">
-                <div class="label">Ties</div>
-                <output></output>
+    
+            <div id="status">
+                <span></span>'s turn
             </div>
-
-            <div id="player-two" class="score-box">
-                <div class="label">Bethany</div>
-                <output></output>
+    
+             <div id="scoreboard">
+                <div class="cross"></div>
+    
+                <div id="player-one" class="score-box">
+                    <div class="label"></div>
+                    <output></output>
+                </div>
+    
+                <div id="ties" class="score-box">
+                    <div class="label">Ties</div>
+                    <output></output>
+                </div>
+    
+                <div id="player-two" class="score-box">
+                    <div class="label"></div>
+                    <output></output>
+                </div>
+                
+                <div class="nought"></div>
             </div>
             
-            <div class="nought"></div>
+            <button type="button" id="new-game">New Game</button>
         </div>
-
-        <button type="button" id="new-game">New Game</button>
     </div>
 
     <div class="footer">
