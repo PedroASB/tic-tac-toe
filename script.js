@@ -25,6 +25,7 @@ function createGameboard() {
     const board = [[], [], []];
     let squaresMarked = 0;
 
+    // Allocate squares
     for (let i = 0; i < 3; i++) 
         for (let j = 0; j < 3; j++) 
             board[i].push(createSquare());
@@ -93,7 +94,7 @@ function createGameController() {
     const startNewRound = () => {
         currentPlayer = playerOne;
         gameboard.clearBoard();
-    }
+    };
 
     const playTurn = (squarePosition) => {
         const [i, j] = squarePosition;
@@ -150,7 +151,9 @@ function createScreenController() {
     };
 
     const updateStatus = () => {
-        statusSpan.innerText = gameController.getCurrentPlayer().getName();
+        const currentPlayer = gameController.getCurrentPlayer();
+        statusSpan.innerText = currentPlayer.getName();
+        statusSpan.setAttribute("mark", currentPlayer.getMark());
     };
 
     const updateScoreboard = () => {
@@ -205,7 +208,7 @@ function createScreenController() {
 
         form.reset();
         return {playerOneName, playerTwoName};
-    }
+    };
 
     const startGame = () => {
         let {playerOneName, playerTwoName} = handleFormData();
@@ -222,9 +225,11 @@ function createScreenController() {
     };
 
     const newGame = () => {
-        gameInitializationContent.style.display = "flex";
-        gameplayContent.style.display = "none";
-    }
+        if (window.confirm("Do you want to start a new game?")) {
+            gameInitializationContent.style.display = "flex";
+            gameplayContent.style.display = "none";
+        }
+    };
 
     const initialize = () => {
         const startGameButton = document.querySelector("button#start-game");
@@ -233,7 +238,6 @@ function createScreenController() {
         startGameButton.addEventListener("click", startGame);
         newGameButton.addEventListener("click", newGame);
         squares.forEach((square) => { square.addEventListener("click", handleSquareClick); });
-        newGame();
     };
 
     return {initialize};
